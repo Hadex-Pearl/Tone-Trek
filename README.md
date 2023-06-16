@@ -13,3 +13,7 @@ dtmf_decode.py uses power spectral to decode the dtmf tone and plots the spectra
 generate_TS.py: generates 100 training tones for each of the dtmf code and 10 test tones for each of the keys. To run this file, create a folder TS and TEST in the same directory as the code file to get the training and test data.
 
 stacked_TS.py: stacks the 100 training set for each key into a single .dat file. This is done for all the other keys as well as the testing sets. To run this code, make sure the code file is in the same directory as the TS and TEST folders. Create a folder "stacked_sets" in the same directory as the code file.
+
+
+## Training the model
+train_model.py: trains a simple neural network using the training data. To run this code, make sure the code file is in the same directory as the stacked_sets folder.

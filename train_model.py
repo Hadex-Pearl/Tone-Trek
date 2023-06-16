@@ -39,7 +39,7 @@ for keys in TS.keys():
     num_test_tones = X_test.shape[0] - y_test.shape[0]
     y_test = np.vstack((y_test, np.full((num_test_tones, 1), label)))
     label += 1
-
+print(X_train.shape)
 # Preprocessing the data
 # Generate pure tones
 N = 512

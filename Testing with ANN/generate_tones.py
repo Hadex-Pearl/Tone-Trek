@@ -76,7 +76,7 @@ class SignalGenerator:
                 tone = tone/max_val * 32000
                 int_tone = tone.astype(np.int16)
 
-                with wave.open(f'../TS/{key}_{i+1:03d}.wav', 'w') as f:
+                with wave.open(f'./TS/{key}_{i+1:03d}.wav', 'w') as f:
                     f.setnchannels(1)
                     f.setsampwidth(2)
                     f.setframerate(self.Fs)
@@ -108,7 +108,7 @@ class SignalGenerator:
                 tone = 32000/max_val * tone
                 int_tone = tone.astype(np.int16)
 
-                with wave.open(f'../TEST/{key}_{i+1:03d}.wav', 'w') as f:
+                with wave.open(f'./TEST/{key}_{i+1:03d}.wav', 'w') as f:
                     f.setnchannels(1)
                     f.setsampwidth(2)
                     f.setframerate(self.Fs)

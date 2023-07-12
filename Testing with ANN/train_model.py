@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 tf.keras.utils.set_random_seed(124)
 np.random.seed(75)
 
-filedir = "../stacked_tones/"
+filedir = "./stacked_tones/"
 characters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "pound", "star"]
 
 # Create a dictionary of training and test files

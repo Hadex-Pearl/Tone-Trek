@@ -20,6 +20,10 @@ generate_tones.py: generates 100 training tones for each of the dtmf code and 10
 
 stacked_TS.py: stacks the 100 training set for each key into a single .dat file. This is done for all the other keys as well as the testing sets. To run this code, make sure the code file is in the same directory as the TS and TEST folders. Create a folder "stacked_tones" in the same directory as the code file.
 
-
 ## Training the model
 train_model.py: trains a simple neural network using the training data. To run this code, make sure the code file is in the same directory as the stacked_tones folder.
+
+# Real Time DTMF Detection on Raspberry Pi/Arduino
+## Generate sequence of tones
+generate_seq.py: generates a sequence of dtmf tones preceeded by a synchronization tone of frequency 1000Hz. This frequency is used to synchronize the receiver and the transmitter. After generating the tone, it is played to the Arduino nanosense BLE with an audio sensor to capture the tones.
+

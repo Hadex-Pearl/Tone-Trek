@@ -46,14 +46,15 @@ dtmf_sequence = []
 # Add one second of silence
 dtmf_sequence.extend(silence)
 
-# Add 512 samples of synchronization tone
+# Add 2*512 samples of synchronization tone
+dtmf_sequence.extend(sync_tone)
 dtmf_sequence.extend(sync_tone)
 # print(len(dtmf_sequence))
 
-# Add 512 samples of silence
-dtmf_sequence.extend(silence[:512])
+# Add 1024 samples of silence
+dtmf_sequence.extend(silence[:1024])
 
-# Add each DTMF tone to the sequence three times
+# Add each DTMF tone to the sequence six times (3072 samples)
 for key, freqs in freqs.items():
     f1, f2 = freqs
     phase = random.uniform(0, 2*np.pi)
@@ -61,8 +62,9 @@ for key, freqs in freqs.items():
     dtmf_sequence.extend(dtmf_tone)
     dtmf_sequence.extend(dtmf_tone)
     dtmf_sequence.extend(dtmf_tone)
-#     if key == '1':
-#         break
+    dtmf_sequence.extend(dtmf_tone)
+    dtmf_sequence.extend(dtmf_tone)
+    dtmf_sequence.extend(dtmf_tone)
  
 # print(len(dtmf_sequence))
 
@@ -72,7 +74,7 @@ while len(dtmf_sequence) < 960000:
 
 # print(len(dtmf_sequence))
 
-# Trim the sequence to 30 seconds
+# Trim the sequence to 60 seconds
 dtmf_sequence = dtmf_sequence[:960000]
 # print(len(dtmf_sequence))
 

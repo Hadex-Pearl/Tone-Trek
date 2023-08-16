@@ -24,6 +24,7 @@ namespace{
   short audio_data[num_bufs * num_buf_samples] = {0}; // holds good audio
   short audio_junk[num_buf_samples]; // holds junk audio
   volatile int buf_ctr;
+  volatile int proc_ctr;
   int old_buf_ctr;
 
   int samples_processed;
@@ -42,6 +43,7 @@ namespace{
 }
 
 void setup(){
+  proc_ctr = 0;
   pinMode(RED_PIN, OUTPUT);
   pinMode(GREEN_PIN, OUTPUT);
   pinMode(BLUE_PIN, OUTPUT);
@@ -92,7 +94,8 @@ void onPDMdata() {
   }
   else{
     PDM.read(&audio_junk[0], num_buf_bytes);
-  }  
+  } 
+  proc_ctr++; 
 }
 
 void loop(){
@@ -104,27 +107,21 @@ void loop(){
     HandleOutput_status( -3 );
     buf_ctr = old_buf_ctr = samples_processed = 0;
     audio_capture = 1;
-    while(1){
-      if(old_buf_ctr != buf_ctr){
-        old_buf_ctr = old_buf_ctr + 1;
-        samples_processed += num_buf_samples;
-        if( samples_processed >= target_samples ) break;
-      }
+    while(audio_capture == 1){
+      // Sleep for 5ms
+      delay(5);
+      // if(old_buf_ctr != buf_ctr){
+      //   old_buf_ctr = old_buf_ctr + 1;
+      //   samples_processed += num_buf_samples;
+      //   if( samples_processed >= target_samples ) break;
+      // }
     }
+    int temp_ctr = proc_ctr;
     HandleOutput_status(-4); // tell RPi where we're at
     // Send the audio to the RPi
     // HandleOutput_audio((byte*)audio_data, num_bufs*num_buf_bytes);
-    // Find max of audio_data
-    // short max_audio = 0;
-    // for (int i = 0; i < num_bufs * num_buf_samples; i++) {
-    //     if (audio_data[i] > max_audio) {
-    //         max_audio = audio_data[i];
-    //     }
-    // }
-    // HandleOutput_short(max_audio);
-    // Detect sync tone here
-    // Calculate dot product of each tone with audio_data
-    // unsigned long start_time = micros(); // Check computation start time
+    
+    // compute dot product of captured audio and purewaves
     for (int i = 0; i < 9; i++) {
         sin_dot[i] = 0;
         cos_dot[i] = 0;
@@ -134,6 +131,7 @@ void loop(){
             sin_dot[i] += audio_data[j] * sin_tones[i][j];
             cos_dot[i] += audio_data[j] * cos_tones[i][j];
         }
+        // Compute power
         power[i] = sin_dot[i] * sin_dot[i] + cos_dot[i] * cos_dot[i];
     }
 
@@ -144,11 +142,12 @@ void loop(){
             max_power = power[i];
         }
     }
+    // Define a treshold for detection
     if (max_power < 100000000) {
       // Light red LED
-      light_led(RED_PIN);
-      delay(100);
-      light_led(NO_PIN);
+      // light_led(RED_PIN);
+      // delay(100);
+      // light_led(NO_PIN);
       // Print "No freq detected"
       HandleOutput_int(-1);
     } else {
@@ -169,23 +168,22 @@ void loop(){
             index = i;
         }
     }
-    // unsigned long stop_time = micros();
-    // total_time = stop_time - start_time;
-    // HandleOutput_double(total_time);
-    // Light green LED
+    
+    // Light green LED if sync tone detected
     if (freqs[index] == 1000) {
       light_led(GREEN_PIN);
       delay(100);
       light_led(NO_PIN);
-    } else {
-      light_led(BLUE_PIN);
-      delay(100);
-      light_led(NO_PIN);
-    }
+    } //else {
+    //   light_led(BLUE_PIN);
+    //   delay(100);
+    //   light_led(NO_PIN);
+    // }
     HandleOutput_int(freqs[index]);
     }
     HandleOutput_status(-5);
     // PDM.end();
+    HandleOutput_int(proc_ctr - temp_ctr);
   }
 }
 

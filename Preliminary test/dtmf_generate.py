@@ -73,11 +73,11 @@ class GenerateDTMF:
 
 
 def main():
-    # Generate a all DTMF tone and save it to a file.
+    # Generate all DTMF tones and save it to a file.
     for key, freqs in DTMF_FREQS.items():
         f1, f2 = freqs
         if key in ['*', '#']:
-            key = f'pound' if key == '#' else f'star'
+            key = f'pound' if key == '#' else f'star' # pound or star for filename
         gen = GenerateDTMF(f1, f2)
         # Without noise
         gen.generate_dtmf_tone()

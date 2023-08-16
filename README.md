@@ -1,55 +1,63 @@
-# Tone-Trek
-ToneTrek is an DTMF (Dual-Tone Multi-Frequency) demodulation repository designed to accurately decode and interpret DTMF signals. DTMF is a signaling technique used in telecommunication systems, commonly found in touch-tone telephone keypads, interactive voice response systems, and various other applications. 
+# DTMF-Lab
+This lab is an experiment, designed to accurately decode and interpret DTMF signals. DTMF is a signaling technique used in telecommunication systems, commonly found in touch-tone telephone keypads, interactive voice response systems, and various other applications. The experiment is divided into three parts: the first part is to decode DTMF signals using a simple power spectral analysis, the second part is to decode DTMF signals using a neural network and the third part uses real-time decoding of the DTMF signal using Arduino nano sense BLE.
 
-## Initial commit
-This has 2 python files, plots and dtmf tones with noise and without noise. Which is now included in the Preliminary test folder.
+## Part 1: Preliminary Test
+This has 2 python files.
 
-dtmf_generate.py generates the 16 tones of the dtmf and saves it in Tones (without noise) and Tones_n (with noise) directories. To run this file, create a folder Tones and Tones_n in the same directory as the code file to get the tones.
+1. dtmf_generate.py generates the 16 tones of the dtmf and saves it in Tones (without noise) and Tones_n (with noise) directories. 
+    - To run this file, create a folder "Tones" and "Tones_n" in the same directory as the code file to get the tones.
 
-```python dtmf_generate.py```
+2. dtmf_decode.py uses power spectral to decode the dtmf tone and plots the spectral for each tone in Plots (without noise) and Plots_n (with noise) directories. 
+    - To run this file, create a folder "Plots" and "Plots_n" in the same directory as the code file to get the plots.
 
-dtmf_decode.py uses power spectral to decode the dtmf tone and plots the spectral for each tone in Plots (without noise) and Plots_n (with noise) directories. To run this file, create a folder Plots and Plots_n in the same directory as the code file to get the plots.
+Look at the spikes in the plots to identify the frequencies and hence the key detected.
 
-```python dtmf_decode.py```
+## Part 2: Testing with ANN
+This folder has 3 python files.
 
-Look at the spikes in the plot to identify the frequencies and hence the key detected.
+### Generate Training Set
+1. generate_tones.py: generates 100 training tones for each of the dtmf keys and 10 test tones for each of the keys. 
+    - To run this file, create a folder "TRAIN" and "TEST" in the same directory as the code file to get the training and test data.
+    - When generating dataset, take note of the boolean variables, noise and distortion to determine it's presence in the dataset you want to generate.
 
-# Testing with ANN
-## Generate Training Set
-generate_tones.py: generates 100 training tones for each of the dtmf code and 10 test tones for each of the keys. To run this file, create a folder TS and TEST in the same directory as the code file to get the training and test data.
+2. stacked_TS.py: stacks the 100 training set and 10 test set for each key into a single ".dat" file for easy use on tensorflow. 
+    - To run this code, make sure the code file is in the same directory as the "TRAIN" and "TEST" folders.
+    - Create a folder "stacked_tones" in the same directory as the code file.
 
-stacked_TS.py: stacks the 100 training set for each key into a single .dat file. This is done for all the other keys as well as the testing sets. To run this code, make sure the code file is in the same directory as the TS and TEST folders. Create a folder "stacked_tones" in the same directory as the code file.
+### Training the model
+3. train_model.py: trains a simple neural network using the training data. 
+    - To run this code, make sure the code file is in the same directory as the stacked_tones folder.
 
-## Training the model
-train_model.py: trains a simple neural network using the training data. To run this code, make sure the code file is in the same directory as the stacked_tones folder.
+## Part 3: Real Time DTMF Detection on Raspberry Pi/Arduino
+This part is contained in the Realtime decode folder. this experiment also takes place in 3 parts.
+    1. Collecting dataset using Arduino
+    2. Training a model on PC using TensorflowLite
+    3. Deploying model to Arduino and detecting DTMF tone realtime.
 
-# Real Time DTMF Detection on Raspberry Pi/Arduino
-## Generate sequence of tones
-generate_seq.py: generates a sequence of dtmf tones preceeded by a synchronization tone of frequency 1000Hz. This frequency is used to synchronize the receiver and the transmitter. After generating the tone, it is played to the Arduino nanosense BLE with an audio sensor to capture the tones.
+### Collecting dataset using Arduino
+This would require a synchronization between the transmiter(Any device with microphone used in playing the tone. E.g PC or phone) and the receiver(Arduino). This is done by playing a 1000Hz synchronization tone before playing the DTMF tone. The Arduino would then use the 1000Hz tone to synchronize with the transmitter. The Arduino would then capture the DTMF tone and store it in a buffer. The buffer is then sent to RaspberryPi which saves the buffer to a file.
 
-## Capture the tones on Arduino
-The Arduino code is in the folder "dtmf_data_capture". The code is uploaded to the Arduino Nano 33 BLE sense. The code captures the tones and stores it in a buffer. The buffer is then sent to the Raspberry Pi via BLE.
+#### Generate sequence of tones
+1. generate_seq.py: generates a sequence of dtmf tones preceeded by a synchronization tone of frequency 1000Hz. This frequency is used to synchronize the receiver and the transmitter. After generating the tone, it is played to the Arduino nanosense BLE with an audio sensor to capture the tones.
+    - After running this code, a one minute .wav file containing the sequence is generated in the same folder the code is being ran.
+
+#### Capture the tones on Arduino
+The Arduino code is in the folder "dtmf_data_capture". The code is uploaded to the Arduino Nano 33 BLE sense. The code captures the tones and stores it in a buffer. The buffer is then sent to the Raspberry Pi.
 
 This Arduino code performs audio processing using the PDM (Pulse Density Modulation) microphone to analyze incoming audio data. Here's a summary of what the code is doing:
 
-1. Include Libraries: The code includes necessary libraries for Arduino, PDM microphone handling, and a custom serial communication module.
-
-2. Define LED Pins: Pin numbers for different LED colors are defined using constants.
-
-3. Global Variables: Various global variables are declared to store audio data, frequencies, sine and cosine wave values, power calculations, and timing information.
-
-4. Setup Function:
+1. Setup Function:
 
     - Initializes the LED pins.
     - Initializes the PDM microphone with a gain of 200 and a sample rate of 16000 Hz.
     - Creates pure sine and cosine wave signals which would be used in detecting frequencies present in a captured tone.
 
-5. onPDMdata Function:
+2. onPDMdata Function:
 
     - Handles the callback for PDM data reception.
     - Reads audio data into the sample buffer based on the audio_capture flag.
 
-6. Loop Function:
+3. Loop Function:
 
     - Waits for a signal from another device (RPi) using csc_read_data function.
     - sets up to capture audio data.
@@ -60,24 +68,18 @@ This Arduino code performs audio processing using the PDM (Pulse Density Modulat
         - Calculate and normalizes the power values and detects a specific frequency range based on power levels.
         - Controls LEDs to indicate the detection result and communicates the detected frequency using HandleOutput_int.
 
-7. Output Handling Functions:
+To compile the code: ```arduino-cli compile --fqbn arduino:mbed:nano33ble dtmf_data_capture``` 
+To upload the code: ```arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:mbed:nano33ble dtmf_data_capture```
 
-    Several functions are defined to handle different types of data output to the RaspberryPi. These functions package and send data using a custom serial communication protocol.
+Note: Do this in the Realtime decode folder on your terminal.
 
-8. Light LED Function:
 
-    A function to control LED colors by turning specific pins on or off.
+#### Sending tones to Raspberry Pi
+The Raspberry Pi code "rpicom.py" is in the folder "dtmf_data_capture". The code captures the tones and stores it in a buffer. Here is a summary of what it does:
 
-## Capture the tones on Raspberry Pi
-The Raspberry Pi code is in the folder "dtmf_data_capture". The code is run on the Raspberry Pi 4. The code captures the tones and stores it in a buffer. The buffer is then sent to the Raspberry Pi via BLE.
+1. Initializing Communication: The script initializes communication with the Arduino by calling csc.rpi_init() with the serial port and baud rate.
 
-This Raspberry Pi code performs audio processing using the PDM (Pulse Density Modulation) microphone to analyze incoming audio data. Here's a summary of what the code is doing:
-
-1. Include Libraries: The code includes necessary libraries for Raspberry Pi. The code also includes a custom serial communication module.
-
-2. Initializing Communication: The script initializes communication with the Arduino by calling csc.rpi_init() with the serial port and baud rate.
-
-3. Loop Function:
+2. Loop Function:
 
     - The script enters an infinite loop.
     - It notifies the Arduino that the Raspberry Pi is ready to process a command by calling csc.rpi_tell_ard_ready().

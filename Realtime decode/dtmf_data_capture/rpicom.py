@@ -17,7 +17,7 @@ fdw = -1
 start_time = time.time()
 while(True):
   # Tell the Arduino we are ready to process a command
-  csc.rpi_tell_ard_ready()
+  csc.rpi_tell_ard_ready() 
 
   # Read the command and process it
   ard_cmd = csc.rpi_get_ard_cmd()

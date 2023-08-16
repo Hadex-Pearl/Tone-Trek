@@ -7,7 +7,7 @@ import glob
 import csv
 
 # Stack the tones into a single image
-indir = "./TS/" # directory containing the training data
+indir = "./TRAIN/" # directory containing the training data
 testdir = "./TEST/" # directory containing the test data
 outdir = "./stacked_tones/" # directory to store the stacked tones
 

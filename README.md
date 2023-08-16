@@ -1,5 +1,5 @@
 # DTMF-Lab
-This lab is an experiment, designed to accurately decode and interpret DTMF signals. DTMF is a signaling technique used in telecommunication systems, commonly found in touch-tone telephone keypads, interactive voice response systems, and various other applications. The experiment is divided into three parts: the first part is to decode DTMF signals using a simple power spectral analysis, the second part is to decode DTMF signals using a neural network and the third part uses real-time decoding of the DTMF signal using Arduino nano sense BLE.
+This lab is an experiment, designed to accurately decode and interpret DTMF signals. DTMF is a signaling technique used in telecommunication systems, commonly found in touch-tone telephone keypads, interactive voice response systems, and various other applications. The experiment is divided into three parts: the first part is to decode DTMF signals using a simple power spectral analysis, the second part is to decode DTMF signals using a neural network and the third part uses real-time decoding of the DTMF signal using Arduino nano 33 BLE sense.
 
 ## Part 1: Preliminary Test
 This has 2 python files.

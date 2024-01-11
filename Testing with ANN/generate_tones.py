@@ -109,7 +109,7 @@ class SignalGenerator:
                 int_tone = tone.astype(np.int16)
 
                 # Save tones in a file
-                filename = f'./{"TEST" if test else "TS"}/{key}_{i+1:03d}.wav'
+                filename = f'./{"TEST" if test else "TRAIN"}/{key}_{i+1:03d}.wav'
                 with wave.open(filename, 'w') as f:
                     f.setnchannels(1)
                     f.setsampwidth(2)

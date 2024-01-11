@@ -16,16 +16,16 @@ Look at the spikes in the plots to identify the frequencies and hence the key de
 This folder has 3 python files.
 
 ### Generate Training Set
-1. generate_tones.py: generates 100 training tones for each of the dtmf keys and 10 test tones for each of the keys. 
+1. generate_tones.py: generates 1120 training tones for each of the dtmf keys and 280 test tones for each of the keys. 
     - To run this file, create a folder "TRAIN" and "TEST" in the same directory as the code file to get the training and test data.
     - When generating dataset, take note of the boolean variables, noise and distortion to determine it's presence in the dataset you want to generate.
 
-2. stacked_TS.py: stacks the 100 training set and 10 test set for each key into a single ".dat" file for easy use on tensorflow. 
+2. stacked_TS.py: stacks the 1120 training set and 280 test set for each key into a single ".dat" file for easy use on tensorflow. 
     - To run this code, make sure the code file is in the same directory as the "TRAIN" and "TEST" folders.
     - Create a folder "stacked_tones" in the same directory as the code file.
 
 ### Training the model
-3. train_model.py: trains a simple neural network using the training data. 
+3. train_model.py: trains a simple neural network using the training data. Converts the model to a tensorflow lite model (with and withot quantization) and saves it in the same directory as the code file. 
     - To run this code, make sure the code file is in the same directory as the stacked_tones folder.
 
 ## Part 3: Real Time DTMF Detection on Raspberry Pi/Arduino
